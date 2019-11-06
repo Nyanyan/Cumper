@@ -9,5 +9,8 @@ numOfComps = 0
 bestAverage3 = 0
 
 dfs = pd.read_html(url)
+
+print(dfs[0])
+
 bestAverage3 = dfs[1].at[0, 'Average']
 print(bestAverage3)
