@@ -27,11 +27,12 @@ for i in range(1,len(registration)):
         if len(tmp) > 0:
             bestAverage3str = str(tmp[0])
         else:
-            bestAverage3str = 0
+            bestAverage3str = str(0)
         
+        #print(bestAverage3str)
         bestAverage3 = 0
         tmp3 = 0
-        if ':' in bestAverage3str:
+        if ':' in list(bestAverage3str):
             for j in range(len(bestAverage3str)):
                 if bestAverage3str[j] != ':':
                     bestAverage3 *= 10
@@ -70,7 +71,7 @@ for i in range(1,len(registration)):
         judgeability = False
         if numOfComps > 5:
             judgeability = True
-        print(bestAverage3, numOfComps, judgeability)
+        print(wcaId, bestAverage3, numOfComps, judgeability)
         registration[i].append(bestAverage3)
         registration[i].append(numOfComps)
         registration[i].append(judgeability)
@@ -80,5 +81,5 @@ for i in range(1,len(registration)):
         registration[i].append(False)
         #print(i, wcaId, bestAverage3,numOfComps)
 
-numOfGroups = 4
+numOfGroups = 2
 
