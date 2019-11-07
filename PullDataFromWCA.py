@@ -25,10 +25,33 @@ for i in range(1,len(registration)):
 
         tmp = list(dfs[1][dfs[1]['Event'] == '3x3x3 Cube']['Average'])
         if len(tmp) > 0:
-            bestAverage3 = tmp[0]
+            bestAverage3str = str(tmp[0])
         else:
-            bestAverage3 = 0
+            bestAverage3str = 0
         
+        bestAverage3 = 0
+        tmp3 = 0
+        if ':' in bestAverage3str:
+            for j in range(len(bestAverage3str)):
+                if bestAverage3str[j] != ':':
+                    bestAverage3 *= 10
+                    bestAverage3 += float(bestAverage3str[j])
+                else:
+                    tmp3 = j + 1
+                    break
+            bestAverage3 *= 60
+        tmp4 = 0
+        for j in range(tmp3, len(bestAverage3str)):
+            if bestAverage3str[j] != '.':
+                tmp4 *= 10
+                tmp4 += float(bestAverage3str[j])
+            else:
+                tmp3 = j + 1
+                break
+        bestAverage3 += tmp4
+        for j in range(tmp3, len(bestAverage3str)):
+            bestAverage3 += float(bestAverage3str[j]) / pow(10, (j - tmp3 + 1))
+
         numOfComps = 0
         #print(dfs)
         dfnum = 0
@@ -43,5 +66,19 @@ for i in range(1,len(registration)):
             if not pd.isnull(dfs[dfnum]['Competition'][j]) and not dfs[dfnum]['Competition'][j] in events:
                 #print(dfs[dfnum]['Competition'][j])
                 numOfComps += 1
-        
-        print(wcaId, bestAverage3,numOfComps)
+
+        judgeability = False
+        if numOfComps > 5:
+            judgeability = True
+        print(bestAverage3, numOfComps, judgeability)
+        registration[i].append(bestAverage3)
+        registration[i].append(numOfComps)
+        registration[i].append(judgeability)
+    else:
+        registration[i].append(0)
+        registration[i].append(0)
+        registration[i].append(False)
+        #print(i, wcaId, bestAverage3,numOfComps)
+
+numOfGroups = 4
+
