@@ -4,11 +4,13 @@ from selenium import webdriver
 
 registration = []
 
-with open('RegistrationExportedFromWCACompPage.csv', newline='', encoding='utf-8') as f:
+with open('sample.csv', newline='', encoding='utf-8') as f:
     reader = csv.reader(f)
+    i = 0
     for row in reader:
+        row.insert(0,i)
         registration.append(row)
-
+        i += 1
 wcaidcol = 0
 for i in range(len(registration[0])):
     if registration[0][i] == 'WCA ID':
@@ -82,4 +84,6 @@ for i in range(1,len(registration)):
         #print(i, wcaId, bestAverage3,numOfComps)
 
 numOfGroups = 2
-
+print(registration)
+registration.sort(key=lambda x:x[28])
+print(registration)
