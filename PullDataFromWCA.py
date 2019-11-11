@@ -91,11 +91,10 @@ sortedRegistration = registration[1:]
 sortedRegistration.sort(key=lambda x:x[28])
 i = 0
 while i < len(sortedRegistration):
-    print(i)
     if sortedRegistration[i][28] == 0:
         f = False
         for j in range(len(sortedRegistration) - i):
-            if sortedRegistration[j][28] != 0:
+            if sortedRegistration[i+j][28] != 0:
                 f = True
                 break
         if f == True:
