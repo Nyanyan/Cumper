@@ -65,15 +65,18 @@ for i in range(1,len(registration)):
         #print(dfnum)
         #print(dfs)
         #print(dfs[1])
+        threshold = 5
         for j in range(len(dfs[dfnum])):
             if not pd.isnull(dfs[dfnum]['Competition'][j]) and not dfs[dfnum]['Competition'][j] in events:
                 #print(dfs[dfnum]['Competition'][j])
                 numOfComps += 1
+            if numOfComps > threshold:
+                break
 
         judgeability = False
-        if numOfComps > 5:
+        if numOfComps > threshold:
             judgeability = True
-        print(wcaId, bestAverage3, numOfComps, judgeability)
+        print(wcaId, bestAverage3, judgeability)
         registration[i].append(bestAverage3)
         registration[i].append(numOfComps)
         registration[i].append(judgeability)
@@ -83,7 +86,46 @@ for i in range(1,len(registration)):
         registration[i].append(False)
         #print(i, wcaId, bestAverage3,numOfComps)
 
-numOfGroups = 2
-print(registration)
-registration.sort(key=lambda x:x[28])
-print(registration)
+numOfGroups = 3
+sortedRegistration = registration[1:]
+sortedRegistration.sort(key=lambda x:x[28])
+i = 0
+while i < len(sortedRegistration):
+    print(i)
+    if sortedRegistration[i][28] == 0:
+        f = False
+        for j in range(len(sortedRegistration) - i):
+            if sortedRegistration[j][28] != 0:
+                f = True
+                break
+        if f == True:
+            tmp = sortedRegistration[i]
+            del sortedRegistration[i]
+            sortedRegistration.append(tmp)
+            i -= 1
+    i += 1
+for i in range(len(sortedRegistration)):
+    print(sortedRegistration[i])
+
+groupPeople = len(sortedRegistration) // numOfGroups
+fraction = len(sortedRegistration) - groupPeople * numOfGroups
+groupNum = []
+for i in range(numOfGroups):
+    if fraction != 0:
+        groupNum.append(groupPeople + 1)
+        fraction -= 1
+    else:
+        groupNum.append(groupPeople)
+
+group = []
+for i in range(numOfGroups):
+    tmp = 0
+    for j in range(len(group)):
+        tmp += len(group[j])
+    group.append(sortedRegistration[tmp:tmp + groupNum[i]])
+
+print('')
+for i in range(len(group)):
+    for j in range(len(group[i])):
+        print(group[i][j])
+    print('')
