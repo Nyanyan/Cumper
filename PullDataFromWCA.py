@@ -5,6 +5,7 @@ from selenium import webdriver
 thisYear = 2019
 birththreshold = 12
 compthreshold = 3
+judgeMargin = 1
 
 
 registration = []
@@ -136,6 +137,13 @@ for i in range(numOfGroups):
         tmp += len(group[j])
     group.append(sortedRegistration[tmp:tmp + groupNum[i]])
 
+print('')
+for i in range(numOfGroups):
+    for j in range(len(group[i])):
+        print(group[i][j])
+    print('')
+print('')
+
 judgecnt = []
 for i in range(numOfGroups):
     tmp = 0
@@ -145,14 +153,34 @@ for i in range(numOfGroups):
                 if group[j][k][len(group[j][k]) - 1] == True:
                     tmp += 1
     judgecnt.append(tmp)
-
 print(judgecnt)
 
 judgelack = []
 for i in range(numOfGroups):
-    judgelack.append(len(group[i]) + 1 - judgecnt[i])
-
+    judgelack.append(len(group[i]) + judgeMargin - judgecnt[i])
 print(judgelack)
+
+for i in range(numOfGroups):
+    if judgelack[i] > 0:
+        tmp1 = []
+        tmp1index = 0
+        for k in reversed(range(len(group[i]))):
+            if group[i][k][len(group[i][k]) - 1] == False:
+                tmp1 = group[i][k]
+                tmp1index = k
+        for j in range(numOfGroups):
+            if i != j and judgelack[j] < 0:
+                tmp2 = []
+                tmp2index = 0
+                for k in reversed(range(len(group[j]))):
+                    if group[j][k][len(group[j][k]) - 1] == True:
+                        tmp1 = group[j][k]
+                        tmp2index = k
+                del group[i][tmp1index]
+                del group[j][tmp2index]
+                group[i].append(tmp2)
+                group[j].append(tmp1)
+
 
 print('')
 for i in range(numOfGroups):
