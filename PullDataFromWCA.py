@@ -91,7 +91,7 @@ for i in range(1,len(registration)):
         registration[i].append(numOfComps)
         registration[i].append(judgeability)
     else:
-        registration[i].append(0)
+        registration[i].append(100000000000)
         registration[i].append(0)
         registration[i].append(False)
 
@@ -100,6 +100,7 @@ numOfGroups = 3
 sortedRegistration = registration[1:]
 sortedRegistration.sort(key=lambda x:x[28])
 i = 0
+'''
 while i < len(sortedRegistration):
     if sortedRegistration[i][28] == 0:
         f = False
@@ -113,6 +114,7 @@ while i < len(sortedRegistration):
             sortedRegistration.append(tmp)
             i -= 1
     i += 1
+'''
 '''
 for i in range(len(sortedRegistration)):
     print(sortedRegistration[i])
@@ -144,10 +146,16 @@ for i in range(numOfGroups):
                     tmp += 1
     judgecnt.append(tmp)
 
+print(judgecnt)
+
+judgelack = []
+for i in range(numOfGroups):
+    judgelack.append(len(group[i]) + 1 - judgecnt[i])
+
+print(judgelack)
+
 print('')
 for i in range(numOfGroups):
     for j in range(len(group[i])):
         print(group[i][j])
     print('')
-
-print(judgecnt)
