@@ -176,25 +176,25 @@ while flag:
                 tmp1 = []
                 tmp1index = 0
                 for k in reversed(range(len(group[i]))):
-                    if group[i][k][len(group[i][k]) - 1] == False:
+                    if group[i][k][len(group[i][k]) - 1] == True:
                         tmp1 = group[i][k]
                         tmp1index = k
                 if tmp1 == []:
-                    tmp1 = group[i][len(group[i]) - 1]
+                    tmp1 = group[i][0]
                 for j in range(numOfGroups):
                     if i != j and judgelack[j] < 0:
                         tmp2 = []
                         tmp2index = 0
                         for k in reversed(range(len(group[j]))):
-                            if group[j][k][len(group[j][k]) - 1] == True:
-                                tmp1 = group[j][k]
+                            if group[j][k][len(group[j][k]) - 1] == False:
+                                tmp2 = group[j][k]
                                 tmp2index = k
                         if tmp2 == []:
                             tmp2 = group[j][0]
                         del group[i][tmp1index]
                         del group[j][tmp2index]
                         group[i].append(tmp2)
-                        group[j].insert(0, tmp1)
+                        group[j].append(tmp1)
                         break
 
     print('')
