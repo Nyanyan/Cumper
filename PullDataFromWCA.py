@@ -113,9 +113,10 @@ while i < len(sortedRegistration):
             sortedRegistration.append(tmp)
             i -= 1
     i += 1
+'''
 for i in range(len(sortedRegistration)):
     print(sortedRegistration[i])
-
+'''
 groupPeople = len(sortedRegistration) // numOfGroups
 fraction = len(sortedRegistration) - groupPeople * numOfGroups
 groupNum = []
@@ -133,8 +134,20 @@ for i in range(numOfGroups):
         tmp += len(group[j])
     group.append(sortedRegistration[tmp:tmp + groupNum[i]])
 
+judgecnt = []
+for i in range(numOfGroups):
+    tmp = 0
+    for j in range(numOfGroups):
+        if i != j:
+            for k in range(len(group[j])):
+                if group[j][k][len(group[j][k]) - 1] == True:
+                    tmp += 1
+    judgecnt.append(tmp)
+
 print('')
-for i in range(len(group)):
+for i in range(numOfGroups):
     for j in range(len(group[i])):
         print(group[i][j])
     print('')
+
+print(judgecnt)
