@@ -56,15 +56,11 @@ for i in range(1,len(registration)):
             bestAverage3 += float(bestAverage3str[j]) / pow(10, (j - tmp3 + 1))
 
         numOfComps = 0
-        #print(dfs)
         dfnum = 0
         for j in range(0,len(dfs)):
             if 'Competition' in dfs[j].columns:
                 dfnum = j
                 break
-        #print(dfnum)
-        #print(dfs)
-        #print(dfs[1])
         threshold = 5
         for j in range(len(dfs[dfnum])):
             if not pd.isnull(dfs[dfnum]['Competition'][j]) and not dfs[dfnum]['Competition'][j] in events:
@@ -84,7 +80,7 @@ for i in range(1,len(registration)):
         registration[i].append(0)
         registration[i].append(0)
         registration[i].append(False)
-        #print(i, wcaId, bestAverage3,numOfComps)
+
 
 numOfGroups = 3
 sortedRegistration = registration[1:]
