@@ -2,6 +2,11 @@ import pandas as pd
 import csv
 from selenium import webdriver
 
+thisYear = 2019
+birththreshold = 12
+compthreshold = 3
+
+
 registration = []
 
 with open('sample.csv', newline='', encoding='utf-8') as f:
@@ -61,17 +66,26 @@ for i in range(1,len(registration)):
             if 'Competition' in dfs[j].columns:
                 dfnum = j
                 break
-        threshold = 5
         for j in range(len(dfs[dfnum])):
             if not pd.isnull(dfs[dfnum]['Competition'][j]) and not dfs[dfnum]['Competition'][j] in events:
                 #print(dfs[dfnum]['Competition'][j])
                 numOfComps += 1
-            if numOfComps > threshold:
+            if numOfComps > compthreshold:
                 break
 
+        birthstr = registration[i][5]
+        birth = 0
+        for j in range(len(birthstr)):
+            if birthstr[j] == '/':
+                break
+            else:
+                birth *= 10
+                birth += int(birthstr[j])
+
         judgeability = False
-        if numOfComps > threshold:
+        if numOfComps > compthreshold and thisYear - birth > birththreshold:
             judgeability = True
+
         print(wcaId, bestAverage3, judgeability)
         registration[i].append(bestAverage3)
         registration[i].append(numOfComps)
