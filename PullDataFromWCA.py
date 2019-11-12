@@ -6,6 +6,7 @@ thisYear = 2019
 birththreshold = 12
 compthreshold = 3
 judgeMargin = 1
+country = 'Japan'
 
 
 registration = []
@@ -60,6 +61,7 @@ for i in range(1,len(registration)):
         bestAverage3 += tmp4
         for j in range(tmp3, len(bestAverage3str)):
             bestAverage3 += float(bestAverage3str[j]) / pow(10, (j - tmp3 + 1))
+        bestAverage3 = round(bestAverage3, 2)
 
         numOfComps = 0
         dfnum = 0
@@ -84,7 +86,7 @@ for i in range(1,len(registration)):
                 birth += int(birthstr[j])
 
         judgeability = False
-        if numOfComps > compthreshold and thisYear - birth > birththreshold:
+        if numOfComps > compthreshold and thisYear - birth > birththreshold and registration[i][3] == 'Japan':
             judgeability = True
 
         print(wcaId, bestAverage3, judgeability)
@@ -101,25 +103,8 @@ numOfGroups = 3
 sortedRegistration = registration[1:]
 sortedRegistration.sort(key=lambda x:x[28])
 i = 0
-'''
-while i < len(sortedRegistration):
-    if sortedRegistration[i][28] == 0:
-        f = False
-        for j in range(len(sortedRegistration) - i):
-            if sortedRegistration[i+j][28] != 0:
-                f = True
-                break
-        if f == True:
-            tmp = sortedRegistration[i]
-            del sortedRegistration[i]
-            sortedRegistration.append(tmp)
-            i -= 1
-    i += 1
-'''
-'''
-for i in range(len(sortedRegistration)):
-    print(sortedRegistration[i])
-'''
+
+
 groupPeople = len(sortedRegistration) // numOfGroups
 fraction = len(sortedRegistration) - groupPeople * numOfGroups
 groupNum = []
