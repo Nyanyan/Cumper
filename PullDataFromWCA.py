@@ -144,46 +144,61 @@ for i in range(numOfGroups):
     print('')
 print('')
 
-judgecnt = []
-for i in range(numOfGroups):
-    tmp = 0
-    for j in range(numOfGroups):
-        if i != j:
-            for k in range(len(group[j])):
-                if group[j][k][len(group[j][k]) - 1] == True:
-                    tmp += 1
-    judgecnt.append(tmp)
-print(judgecnt)
-
-judgelack = []
-for i in range(numOfGroups):
-    judgelack.append(len(group[i]) + judgeMargin - judgecnt[i])
-print(judgelack)
-
-for i in range(numOfGroups):
-    if judgelack[i] > 0:
-        tmp1 = []
-        tmp1index = 0
-        for k in reversed(range(len(group[i]))):
-            if group[i][k][len(group[i][k]) - 1] == False:
-                tmp1 = group[i][k]
-                tmp1index = k
+flag = True
+while flag:
+    judgecnt = []
+    for i in range(numOfGroups):
+        tmp = 0
         for j in range(numOfGroups):
-            if i != j and judgelack[j] < 0:
-                tmp2 = []
-                tmp2index = 0
-                for k in reversed(range(len(group[j]))):
+            if i != j:
+                for k in range(len(group[j])):
                     if group[j][k][len(group[j][k]) - 1] == True:
-                        tmp1 = group[j][k]
-                        tmp2index = k
-                del group[i][tmp1index]
-                del group[j][tmp2index]
-                group[i].append(tmp2)
-                group[j].append(tmp1)
+                        tmp += 1
+        judgecnt.append(tmp)
+    print(judgecnt)
 
+    judgelack = []
+    for i in range(numOfGroups):
+        judgelack.append(len(group[i]) + judgeMargin - judgecnt[i])
+    print(judgelack)
 
-print('')
-for i in range(numOfGroups):
-    for j in range(len(group[i])):
-        print(group[i][j])
+    flag = False
+    flag2 = False
+    for i in range(numOfGroups):
+        if judgelack[i] < 0:
+            flag2 = True
+            break
+
+    if flag2 == True:
+        for i in range(numOfGroups):
+            if judgelack[i] > 0:
+                flag = True
+                tmp1 = []
+                tmp1index = 0
+                for k in reversed(range(len(group[i]))):
+                    if group[i][k][len(group[i][k]) - 1] == False:
+                        tmp1 = group[i][k]
+                        tmp1index = k
+                if tmp1 == []:
+                    tmp1 = group[i][len(group[i]) - 1]
+                for j in range(numOfGroups):
+                    if i != j and judgelack[j] < 0:
+                        tmp2 = []
+                        tmp2index = 0
+                        for k in reversed(range(len(group[j]))):
+                            if group[j][k][len(group[j][k]) - 1] == True:
+                                tmp1 = group[j][k]
+                                tmp2index = k
+                        if tmp2 == []:
+                            tmp2 = group[j][0]
+                        del group[i][tmp1index]
+                        del group[j][tmp2index]
+                        group[i].append(tmp2)
+                        group[j].insert(0, tmp1)
+                        break
+
     print('')
+    for i in range(numOfGroups):
+        for j in range(len(group[i])):
+            print(group[i][j])
+        print('')
