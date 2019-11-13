@@ -4,12 +4,12 @@ from selenium import webdriver
 
 thisYear = 2019
 birththreshold = 12
-compthreshold = 3
-judgeMargin = 10
+compthreshold = 5
+judgeMargin = 1
 country = 'Japan'
 countryindex = 3
 birthindex = 5
-numOfGroups = 4
+numOfGroups = 3
 events = ['3x3x3 Cube', '2x2x2 Cube', '4x4x4 Cube', '5x5x5 Cube', '6x6x6 Cube', '7x7x7 Cube', '3x3x3 Blindfolded', '3x3x3 Fewest Moves', '3x3x3 One-Handed', '3x3x3 With Feet', 'Clock', 'Megaminx', 'Pyraminx', 'Skewb', 'Square-1', '4x4x4 Blindfolded', '5x5x5 Blindfolded', '3x3x3 Multi-Blind']
 
 
@@ -31,7 +31,7 @@ for i in range(len(registration[0])):
 eventindex = []
 for i in events:
     for j in range(len(registration[0])):
-        if registration[j] == i:
+        if registration[0][j] == i:
             eventindex.append(j)
 
 
@@ -68,15 +68,14 @@ for i in range(1,len(registration)):
         judgeability = False
         if numOfComps > compthreshold and thisYear - birth > birththreshold and registration[i][countryindex] == 'Japan':
             judgeability = True
+        
+        print(wcaId, judgeability)
 
-        print(wcaId, bestAverage, judgeability)
-        registration[i].append(numOfComps)
         registration[i].append(judgeability)
     else:
-        registration[i].append(0)
         registration[i].append(False)
 
-
+judgeabilityindex = len(registration[1])
 
 timeindex = len(registration[1])
 
@@ -122,6 +121,8 @@ for eventnum in range(len(events)):
                 bestAverage += float(bestAveragestr[j]) / pow(10, (j - tmp3 + 1))
             bestAverage = round(bestAverage, 2)
 
+            print(wcaId, bestAverage)
+
             registration[i].append(bestAverage)
         else:
             registration[i].append(100000000000)
@@ -165,7 +166,7 @@ for eventnum in range(len(events)):
             for j in range(numOfGroups):
                 if i != j:
                     for k in range(len(group[j])):
-                        if group[j][k][len(group[j][k]) - 1] == True:
+                        if group[j][k][judgeabilityindex] == True:
                             tmp += 1
             judgecnt.append(tmp)
         print(judgecnt)
@@ -189,7 +190,7 @@ for eventnum in range(len(events)):
                     tmp1 = []
                     tmp1index = 0
                     for k in reversed(range(len(group[i]))):
-                        if group[i][k][len(group[i][k]) - 1] == True:
+                        if group[i][k][judgeabilityindex] == True:
                             tmp1 = group[i][k]
                             tmp1index = k
                     if tmp1 == []:
@@ -199,7 +200,7 @@ for eventnum in range(len(events)):
                             tmp2 = []
                             tmp2index = 0
                             for k in reversed(range(len(group[j]))):
-                                if group[j][k][len(group[j][k]) - 1] == False:
+                                if group[j][k][judgeabilityindex] == False:
                                     tmp2 = group[j][k]
                                     tmp2index = k
                             if tmp2 == []:
