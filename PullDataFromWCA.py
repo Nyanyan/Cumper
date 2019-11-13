@@ -5,13 +5,16 @@ from selenium import webdriver
 thisYear = 2019
 birththreshold = 12
 compthreshold = 3
-judgeMargin = 1
+judgeMargin = 10
 country = 'Japan'
+countryindex = 3
+birthindex = 5
+numOfGroups = 4
 
 
 registration = []
 
-with open('sample.csv', newline='', encoding='utf-8') as f:
+with open('RegistrationExportedFromWCACompPage.csv', newline='', encoding='utf-8') as f:
     reader = csv.reader(f)
     i = 0
     for row in reader:
@@ -24,6 +27,12 @@ for i in range(len(registration[0])):
         wcaidcol = i
 
 events = ['3x3x3 Cube', '2x2x2 Cube', '4x4x4 Cube', '5x5x5 Cube', '6x6x6 Cube', '7x7x7 Cube', '3x3x3 Blindfolded', '3x3x3 Fewest Moves', '3x3x3 One-Handed', '3x3x3 With Feet', 'Clock', 'Megaminx', 'Pyraminx', 'Skewb', 'Square-1', '4x4x4 Blindfolded', '5x5x5 Blindfolded', '3x3x3 Multi-Blind']
+eventindex = []
+for i in range(events):
+    for j in range(len(registration[0])):
+        if registration[j] == i:
+            eventindex.append(j)
+
 
 for i in range(1,len(registration)):
     wcaId = registration[i][wcaidcol]
@@ -76,7 +85,7 @@ for i in range(1,len(registration)):
             if numOfComps > compthreshold:
                 break
 
-        birthstr = registration[i][5]
+        birthstr = registration[i][birthindex]
         birth = 0
         for j in range(len(birthstr)):
             if birthstr[j] == '/':
@@ -86,7 +95,7 @@ for i in range(1,len(registration)):
                 birth += int(birthstr[j])
 
         judgeability = False
-        if numOfComps > compthreshold and thisYear - birth > birththreshold and registration[i][3] == 'Japan':
+        if numOfComps > compthreshold and thisYear - birth > birththreshold and registration[i][countryindex] == 'Japan':
             judgeability = True
 
         print(wcaId, bestAverage3, judgeability)
@@ -98,8 +107,6 @@ for i in range(1,len(registration)):
         registration[i].append(0)
         registration[i].append(False)
 
-
-numOfGroups = 3
 sortedRegistration = registration[1:]
 sortedRegistration.sort(key=lambda x:x[28])
 i = 0
