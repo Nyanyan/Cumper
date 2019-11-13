@@ -10,6 +10,7 @@ country = 'Japan'
 countryindex = 3
 birthindex = 5
 numOfGroups = 4
+events = ['3x3x3 Cube', '2x2x2 Cube', '4x4x4 Cube', '5x5x5 Cube', '6x6x6 Cube', '7x7x7 Cube', '3x3x3 Blindfolded', '3x3x3 Fewest Moves', '3x3x3 One-Handed', '3x3x3 With Feet', 'Clock', 'Megaminx', 'Pyraminx', 'Skewb', 'Square-1', '4x4x4 Blindfolded', '5x5x5 Blindfolded', '3x3x3 Multi-Blind']
 
 
 registration = []
@@ -26,14 +27,15 @@ for i in range(len(registration[0])):
     if registration[0][i] == 'WCA ID':
         wcaidcol = i
 
-events = ['3x3x3 Cube', '2x2x2 Cube', '4x4x4 Cube', '5x5x5 Cube', '6x6x6 Cube', '7x7x7 Cube', '3x3x3 Blindfolded', '3x3x3 Fewest Moves', '3x3x3 One-Handed', '3x3x3 With Feet', 'Clock', 'Megaminx', 'Pyraminx', 'Skewb', 'Square-1', '4x4x4 Blindfolded', '5x5x5 Blindfolded', '3x3x3 Multi-Blind']
+
 eventindex = []
 for i in events:
     for j in range(len(registration[0])):
         if registration[j] == i:
             eventindex.append(j)
 
-timeindex = len(registration[1])
+
+
 
 for i in range(1,len(registration)):
     wcaId = registration[i][wcaidcol]
@@ -41,37 +43,6 @@ for i in range(1,len(registration)):
         url = 'https://www.worldcubeassociation.org/persons/'+wcaId
 
         dfs = pd.read_html(url)
-
-        tmp = list(dfs[1][dfs[1]['Event'] == '3x3x3 Cube']['Average'])
-        if len(tmp) > 0:
-            bestAverage3str = str(tmp[0])
-        else:
-            bestAverage3str = str(0)
-        
-        #print(bestAverage3str)
-        bestAverage3 = 0
-        tmp3 = 0
-        if ':' in list(bestAverage3str):
-            for j in range(len(bestAverage3str)):
-                if bestAverage3str[j] != ':':
-                    bestAverage3 *= 10
-                    bestAverage3 += float(bestAverage3str[j])
-                else:
-                    tmp3 = j + 1
-                    break
-            bestAverage3 *= 60
-        tmp4 = 0
-        for j in range(tmp3, len(bestAverage3str)):
-            if bestAverage3str[j] != '.':
-                tmp4 *= 10
-                tmp4 += float(bestAverage3str[j])
-            else:
-                tmp3 = j + 1
-                break
-        bestAverage3 += tmp4
-        for j in range(tmp3, len(bestAverage3str)):
-            bestAverage3 += float(bestAverage3str[j]) / pow(10, (j - tmp3 + 1))
-        bestAverage3 = round(bestAverage3, 2)
 
         numOfComps = 0
         dfnum = 0
@@ -81,7 +52,6 @@ for i in range(1,len(registration)):
                 break
         for j in range(len(dfs[dfnum])):
             if not pd.isnull(dfs[dfnum]['Competition'][j]) and not dfs[dfnum]['Competition'][j] in events:
-                #print(dfs[dfnum]['Competition'][j])
                 numOfComps += 1
             if numOfComps > compthreshold:
                 break
@@ -99,101 +69,149 @@ for i in range(1,len(registration)):
         if numOfComps > compthreshold and thisYear - birth > birththreshold and registration[i][countryindex] == 'Japan':
             judgeability = True
 
-        print(wcaId, bestAverage3, judgeability)
-        registration[i].append(bestAverage3)
+        print(wcaId, bestAverage, judgeability)
         registration[i].append(numOfComps)
         registration[i].append(judgeability)
     else:
-        registration[i].append(100000000000)
         registration[i].append(0)
         registration[i].append(False)
 
-sortedRegistration = registration[1:]
-sortedRegistration.sort(key=lambda x:x[timeindex])
-i = 0
 
 
-groupPeople = len(sortedRegistration) // numOfGroups
-fraction = len(sortedRegistration) - groupPeople * numOfGroups
-groupNum = []
-for i in range(numOfGroups):
-    if fraction != 0:
-        groupNum.append(groupPeople + 1)
-        fraction -= 1
-    else:
-        groupNum.append(groupPeople)
+timeindex = len(registration[1])
 
-group = []
-for i in range(numOfGroups):
-    tmp = 0
-    for j in range(len(group)):
-        tmp += len(group[j])
-    group.append(sortedRegistration[tmp:tmp + groupNum[i]])
 
-'''
-print('')
-for i in range(numOfGroups):
-    for j in range(len(group[i])):
-        print(group[i][j])
-    print('')
-print('')
-'''
 
-flag = True
-while flag:
-    judgecnt = []
+for eventnum in range(len(events)):
+
+    for i in range(1,len(registration)):
+        wcaId = registration[i][wcaidcol]
+        if wcaId != '':
+            url = 'https://www.worldcubeassociation.org/persons/'+wcaId
+
+            dfs = pd.read_html(url)
+
+            tmp = list(dfs[1][dfs[1]['Event'] == events[eventnum]]['Average'])
+            if len(tmp) > 0:
+                bestAveragestr = str(tmp[0])
+            else:
+                bestAveragestr = str(0)
+            
+            #print(bestAveragestr)
+            bestAverage = 0
+            tmp3 = 0
+            if ':' in list(bestAveragestr):
+                for j in range(len(bestAveragestr)):
+                    if bestAveragestr[j] != ':':
+                        bestAverage *= 10
+                        bestAverage += float(bestAveragestr[j])
+                    else:
+                        tmp3 = j + 1
+                        break
+                bestAverage *= 60
+            tmp4 = 0
+            for j in range(tmp3, len(bestAveragestr)):
+                if bestAveragestr[j] != '.':
+                    tmp4 *= 10
+                    tmp4 += float(bestAveragestr[j])
+                else:
+                    tmp3 = j + 1
+                    break
+            bestAverage += tmp4
+            for j in range(tmp3, len(bestAveragestr)):
+                bestAverage += float(bestAveragestr[j]) / pow(10, (j - tmp3 + 1))
+            bestAverage = round(bestAverage, 2)
+
+            registration[i].append(bestAverage)
+        else:
+            registration[i].append(100000000000)
+
+    sortedRegistration = registration[1:]
+    sortedRegistration.sort(key=lambda x:x[timeindex])
+    i = 0
+
+
+    groupPeople = len(sortedRegistration) // numOfGroups
+    fraction = len(sortedRegistration) - groupPeople * numOfGroups
+    groupNum = []
+    for i in range(numOfGroups):
+        if fraction != 0:
+            groupNum.append(groupPeople + 1)
+            fraction -= 1
+        else:
+            groupNum.append(groupPeople)
+
+    group = []
     for i in range(numOfGroups):
         tmp = 0
-        for j in range(numOfGroups):
-            if i != j:
-                for k in range(len(group[j])):
-                    if group[j][k][len(group[j][k]) - 1] == True:
-                        tmp += 1
-        judgecnt.append(tmp)
-    print(judgecnt)
+        for j in range(len(group)):
+            tmp += len(group[j])
+        group.append(sortedRegistration[tmp:tmp + groupNum[i]])
 
-    judgelack = []
-    for i in range(numOfGroups):
-        judgelack.append(len(group[i]) + judgeMargin - judgecnt[i])
-    print(judgelack)
-
-    flag = False
-    flag2 = False
-    for i in range(numOfGroups):
-        if judgelack[i] < 0:
-            flag2 = True
-            break
-
-    if flag2 == True:
-        for i in range(numOfGroups):
-            if judgelack[i] > 0:
-                flag = True
-                tmp1 = []
-                tmp1index = 0
-                for k in reversed(range(len(group[i]))):
-                    if group[i][k][len(group[i][k]) - 1] == True:
-                        tmp1 = group[i][k]
-                        tmp1index = k
-                if tmp1 == []:
-                    tmp1 = group[i][0]
-                for j in range(numOfGroups):
-                    if i != j and judgelack[j] < 0:
-                        tmp2 = []
-                        tmp2index = 0
-                        for k in reversed(range(len(group[j]))):
-                            if group[j][k][len(group[j][k]) - 1] == False:
-                                tmp2 = group[j][k]
-                                tmp2index = k
-                        if tmp2 == []:
-                            tmp2 = group[j][0]
-                        del group[i][tmp1index]
-                        del group[j][tmp2index]
-                        group[i].append(tmp2)
-                        group[j].append(tmp1)
-                        break
-
+    '''
     print('')
     for i in range(numOfGroups):
         for j in range(len(group[i])):
             print(group[i][j])
         print('')
+    print('')
+    '''
+
+    flag = True
+    while flag:
+        judgecnt = []
+        for i in range(numOfGroups):
+            tmp = 0
+            for j in range(numOfGroups):
+                if i != j:
+                    for k in range(len(group[j])):
+                        if group[j][k][len(group[j][k]) - 1] == True:
+                            tmp += 1
+            judgecnt.append(tmp)
+        print(judgecnt)
+
+        judgelack = []
+        for i in range(numOfGroups):
+            judgelack.append(len(group[i]) + judgeMargin - judgecnt[i])
+        print(judgelack)
+
+        flag = False
+        flag2 = False
+        for i in range(numOfGroups):
+            if judgelack[i] < 0:
+                flag2 = True
+                break
+
+        if flag2 == True:
+            for i in range(numOfGroups):
+                if judgelack[i] > 0:
+                    flag = True
+                    tmp1 = []
+                    tmp1index = 0
+                    for k in reversed(range(len(group[i]))):
+                        if group[i][k][len(group[i][k]) - 1] == True:
+                            tmp1 = group[i][k]
+                            tmp1index = k
+                    if tmp1 == []:
+                        tmp1 = group[i][0]
+                    for j in range(numOfGroups):
+                        if i != j and judgelack[j] < 0:
+                            tmp2 = []
+                            tmp2index = 0
+                            for k in reversed(range(len(group[j]))):
+                                if group[j][k][len(group[j][k]) - 1] == False:
+                                    tmp2 = group[j][k]
+                                    tmp2index = k
+                            if tmp2 == []:
+                                tmp2 = group[j][0]
+                            del group[i][tmp1index]
+                            del group[j][tmp2index]
+                            group[i].append(tmp2)
+                            group[j].append(tmp1)
+                            break
+
+        print('')
+        for i in range(numOfGroups):
+            for j in range(len(group[i])):
+                print(group[i][j])
+            print('')
