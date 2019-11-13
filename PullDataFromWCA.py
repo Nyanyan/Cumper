@@ -83,7 +83,7 @@ timeindex = len(registration[1])
 #print(registration)
 
 
-for eventnum in range(len(events)):
+for eventnum in range(6, len(events)):
     print('\n\n')
     print(events[eventnum])
     eventregistration = []
@@ -105,12 +105,13 @@ for eventnum in range(len(events)):
             dfs = pd.read_html(url)
 
             tmp = list(dfs[1][dfs[1]['Event'] == events[eventnum]]['Average'])
-            if len(tmp) > 0:
+            if len(tmp) > 0 and not pd.isnull(tmp[0]):
                 bestAveragestr = str(tmp[0])
             else:
                 bestAveragestr = str(1000000000)
-
+            
             #print(bestAveragestr)
+
             bestAverage = 0
             tmp3 = 0
             if ':' in list(bestAveragestr):
@@ -123,7 +124,6 @@ for eventnum in range(len(events)):
                         break
                 bestAverage *= 60
             tmp4 = 0
-            print(bestAveragestr)
             for j in range(tmp3, len(bestAveragestr)):
                 if bestAveragestr[j] != '.':
                     tmp4 *= 10
