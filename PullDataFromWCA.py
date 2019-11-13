@@ -14,7 +14,7 @@ numOfGroups = 4
 
 registration = []
 
-with open('RegistrationExportedFromWCACompPage.csv', newline='', encoding='utf-8') as f:
+with open('sample.csv', newline='', encoding='utf-8') as f:
     reader = csv.reader(f)
     i = 0
     for row in reader:
@@ -28,11 +28,12 @@ for i in range(len(registration[0])):
 
 events = ['3x3x3 Cube', '2x2x2 Cube', '4x4x4 Cube', '5x5x5 Cube', '6x6x6 Cube', '7x7x7 Cube', '3x3x3 Blindfolded', '3x3x3 Fewest Moves', '3x3x3 One-Handed', '3x3x3 With Feet', 'Clock', 'Megaminx', 'Pyraminx', 'Skewb', 'Square-1', '4x4x4 Blindfolded', '5x5x5 Blindfolded', '3x3x3 Multi-Blind']
 eventindex = []
-for i in range(events):
+for i in events:
     for j in range(len(registration[0])):
         if registration[j] == i:
             eventindex.append(j)
 
+timeindex = len(registration[1])
 
 for i in range(1,len(registration)):
     wcaId = registration[i][wcaidcol]
@@ -108,7 +109,7 @@ for i in range(1,len(registration)):
         registration[i].append(False)
 
 sortedRegistration = registration[1:]
-sortedRegistration.sort(key=lambda x:x[28])
+sortedRegistration.sort(key=lambda x:x[timeindex])
 i = 0
 
 
@@ -129,12 +130,14 @@ for i in range(numOfGroups):
         tmp += len(group[j])
     group.append(sortedRegistration[tmp:tmp + groupNum[i]])
 
+'''
 print('')
 for i in range(numOfGroups):
     for j in range(len(group[i])):
         print(group[i][j])
     print('')
 print('')
+'''
 
 flag = True
 while flag:
