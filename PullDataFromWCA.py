@@ -80,11 +80,25 @@ judgeabilityindex = len(registration[1])
 timeindex = len(registration[1])
 
 
+#print(registration)
+
 
 for eventnum in range(len(events)):
-
+    print('\n\n')
+    print(events[eventnum])
+    eventregistration = []
+    eventTF = 0
+    for i in range(len(registration[0])):
+        if registration[0][i] == events[eventnum]:
+            eventTF = i
+            break
+    #print(eventTF)
+    
     for i in range(1,len(registration)):
-        wcaId = registration[i][wcaidcol]
+        if int(registration[i][eventTF]) == 1:
+            eventregistration.append(registration[i])
+    for i in range(1,len(eventregistration)):
+        wcaId = eventregistration[i][wcaidcol]
         if wcaId != '':
             url = 'https://www.worldcubeassociation.org/persons/'+wcaId
 
@@ -94,8 +108,8 @@ for eventnum in range(len(events)):
             if len(tmp) > 0:
                 bestAveragestr = str(tmp[0])
             else:
-                bestAveragestr = str(0)
-            
+                bestAveragestr = str(1000000000)
+
             #print(bestAveragestr)
             bestAverage = 0
             tmp3 = 0
@@ -109,6 +123,7 @@ for eventnum in range(len(events)):
                         break
                 bestAverage *= 60
             tmp4 = 0
+            print(bestAveragestr)
             for j in range(tmp3, len(bestAveragestr)):
                 if bestAveragestr[j] != '.':
                     tmp4 *= 10
@@ -123,11 +138,11 @@ for eventnum in range(len(events)):
 
             print(wcaId, bestAverage)
 
-            registration[i].append(bestAverage)
+            eventregistration[i].append(bestAverage)
         else:
-            registration[i].append(100000000000)
+            eventregistration[i].append(100000000000)
 
-    sortedRegistration = registration[1:]
+    sortedRegistration = eventregistration[1:]
     sortedRegistration.sort(key=lambda x:x[timeindex])
     i = 0
 
