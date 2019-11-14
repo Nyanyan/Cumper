@@ -9,13 +9,13 @@ judgeMargin = 1
 country = 'Japan'
 countryindex = 3
 birthindex = 5
-numOfGroups = 3
+numOfGroups = [8, 4, 4, 4, 4, 4, 4, 2, 4, 2, 2, 2, 4, 4, 4, 2, 2, 1]
 events = ['3x3x3 Cube', '2x2x2 Cube', '4x4x4 Cube', '5x5x5 Cube', '6x6x6 Cube', '7x7x7 Cube', '3x3x3 Blindfolded', '3x3x3 Fewest Moves', '3x3x3 One-Handed', '3x3x3 With Feet', 'Clock', 'Megaminx', 'Pyraminx', 'Skewb', 'Square-1', '4x4x4 Blindfolded', '5x5x5 Blindfolded', '3x3x3 Multi-Blind']
 
 
 registration = []
 
-with open('sample.csv', newline='', encoding='utf-8') as f:
+with open('RegistrationExportedFromWCACompPage.csv', newline='', encoding='utf-8') as f:
     reader = csv.reader(f)
     i = 0
     for row in reader:
@@ -83,7 +83,7 @@ timeindex = len(registration[1])
 #print(registration)
 
 
-for eventnum in range(6, len(events)):
+for eventnum in range(len(events)):
     print('\n\n')
     print(events[eventnum])
     eventregistration = []
@@ -147,10 +147,10 @@ for eventnum in range(6, len(events)):
     i = 0
 
 
-    groupPeople = len(sortedRegistration) // numOfGroups
-    fraction = len(sortedRegistration) - groupPeople * numOfGroups
+    groupPeople = len(sortedRegistration) // numOfGroups[eventnum]
+    fraction = len(sortedRegistration) - groupPeople * numOfGroups[eventnum]
     groupNum = []
-    for i in range(numOfGroups):
+    for i in range(numOfGroups[eventnum]):
         if fraction != 0:
             groupNum.append(groupPeople + 1)
             fraction -= 1
@@ -158,7 +158,7 @@ for eventnum in range(6, len(events)):
             groupNum.append(groupPeople)
 
     group = []
-    for i in range(numOfGroups):
+    for i in range(numOfGroups[eventnum]):
         tmp = 0
         for j in range(len(group)):
             tmp += len(group[j])
@@ -176,9 +176,9 @@ for eventnum in range(6, len(events)):
     flag = True
     while flag:
         judgecnt = []
-        for i in range(numOfGroups):
+        for i in range(numOfGroups[eventnum]):
             tmp = 0
-            for j in range(numOfGroups):
+            for j in range(numOfGroups[eventnum]):
                 if i != j:
                     for k in range(len(group[j])):
                         if group[j][k][judgeabilityindex] == True:
@@ -187,19 +187,19 @@ for eventnum in range(6, len(events)):
         print(judgecnt)
 
         judgelack = []
-        for i in range(numOfGroups):
+        for i in range(numOfGroups[eventnum]):
             judgelack.append(len(group[i]) + judgeMargin - judgecnt[i])
         print(judgelack)
 
         flag = False
         flag2 = False
-        for i in range(numOfGroups):
+        for i in range(numOfGroups[eventnum]):
             if judgelack[i] < 0:
                 flag2 = True
                 break
 
         if flag2 == True:
-            for i in range(numOfGroups):
+            for i in range(numOfGroups[eventnum]):
                 if judgelack[i] > 0:
                     flag = True
                     tmp1 = []
@@ -210,7 +210,7 @@ for eventnum in range(6, len(events)):
                             tmp1index = k
                     if tmp1 == []:
                         tmp1 = group[i][0]
-                    for j in range(numOfGroups):
+                    for j in range(numOfGroups[eventnum]):
                         if i != j and judgelack[j] < 0:
                             tmp2 = []
                             tmp2index = 0
@@ -227,7 +227,7 @@ for eventnum in range(6, len(events)):
                             break
 
         print('')
-        for i in range(numOfGroups):
+        for i in range(numOfGroups[eventnum]):
             for j in range(len(group[i])):
                 print(group[i][j])
             print('')
