@@ -2,11 +2,12 @@ import pandas as pd
 import csv
 from selenium import webdriver
 import copy
+import sys
 
 thisYear = 2019
 birththreshold = 12
 compthreshold = 5
-judgeMargin = 1
+judgeMargin = 5
 country = 'Japan'
 countryindex = 3
 birthindex = 5
@@ -16,7 +17,7 @@ singleAverage = ['Average','Average','Average','Average','Average','Average','Si
 
 registration = []
 
-with open('sample.csv', newline='', encoding='utf-8') as f: #RegistrationExportedFromWCACompPage
+with open('RegistrationExportedFromWCACompPage.csv', newline='', encoding='utf-8') as f: #RegistrationExportedFromWCACompPage
     reader = csv.reader(f)
     i = 0
     for row in reader:
@@ -75,17 +76,23 @@ for i in range(1,len(registration)):
         if judgeability == True:
             judgeNumber += 1
         
-        print(wcaId, judgeability)
+        #print(wcaId, judgeability)
 
         registration[i].append(judgeability)
     else:
         registration[i].append(False)
+    
+    sys.stdout.write("\r")
+    sys.stdout.write(str(i))
+    sys.stdout.write('/')
+    sys.stdout.write(str(len(registration)))
+    sys.stdout.flush()
 
 judgeabilityindex = len(registration[1])
 
 timeindex = len(registration[1])
 
-
+print('')
 print('Judgeable People:', judgeNumber)
 
 
@@ -106,6 +113,8 @@ for eventnum in range(len(events)):
     for i in range(1,len(registration)):
         if int(registration[i][eventTF]) == 1:
             eventregistration.append(copy.copy(registration[i]))
+    
+    
     for i in range(1,len(eventregistration)):
         wcaId = eventregistration[i][wcaidcol]
         if wcaId != '':
@@ -164,11 +173,19 @@ for eventnum in range(len(events)):
                         break
                 bestTime = tmp4 - (tmp5 - tmp4)
 
-            print(wcaId, bestTime)
+            #print(wcaId, bestTime)
 
             eventregistration[i].append(bestTime)
         else:
             eventregistration[i].append(100000000000)
+        
+        sys.stdout.write("\r")
+        sys.stdout.write(str(i))
+        sys.stdout.write('/')
+        sys.stdout.write(str(len(eventregistration)))
+        sys.stdout.flush()
+
+    print('')
 
     sortedRegistration = copy.copy(eventregistration[1:])
     sortedRegistration.sort(key=lambda x:x[timeindex])
