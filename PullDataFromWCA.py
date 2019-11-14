@@ -16,7 +16,7 @@ singleAverage = ['Average','Average','Average','Average','Average','Average','Si
 
 registration = []
 
-with open('sample.csv', newline='', encoding='utf-8') as f:
+with open('sample.csv', newline='', encoding='utf-8') as f: #RegistrationExportedFromWCACompPage
     reader = csv.reader(f)
     i = 0
     for row in reader:
@@ -38,6 +38,7 @@ for i in events:
 
 
 #judgeability
+print('Judgeability')
 judgeNumber = 0
 for i in range(1,len(registration)):
     wcaId = registration[i][wcaidcol]
@@ -85,7 +86,7 @@ judgeabilityindex = len(registration[1])
 timeindex = len(registration[1])
 
 
-print('JudgeNumber:', judgeNumber)
+print('Judgeable People:', judgeNumber)
 
 
 
@@ -112,39 +113,56 @@ for eventnum in range(len(events)):
 
             dfs = pd.read_html(url)
 
-            col = singleAverage[eventnum]
-
-            tmp = list(dfs[1][dfs[1]['Event'] == events[eventnum]][col])
+            tmp = list(dfs[1][dfs[1]['Event'] == events[eventnum]][singleAverage[eventnum]])
             if len(tmp) > 0 and not pd.isnull(tmp[0]):
                 bestTimestr = str(tmp[0])
             else:
                 bestTimestr = str(1000000000)
             
             #print(bestTimestr)
-
             bestTime = 0
-            tmp3 = 0
-            if ':' in list(bestTimestr):
-                for j in range(len(bestTimestr)):
-                    if bestTimestr[j] != ':' and bestTimestr[j] != '/':
-                        bestTime *= 10
-                        bestTime += float(bestTimestr[j])
+            if events[eventnum] != '3x3x3 Multi-Blind':
+                tmp3 = 0
+                if ':' in list(bestTimestr):
+                    for j in range(len(bestTimestr)):
+                        if bestTimestr[j] != ':':
+                            bestTime *= 10
+                            bestTime += float(bestTimestr[j])
+                        else:
+                            tmp3 = j + 1
+                            break
+                    bestTime *= 60
+                tmp4 = 0
+                for j in range(tmp3, len(bestTimestr)):
+                    if bestTimestr[j] != '.':
+                        tmp4 *= 10
+                        tmp4 += float(bestTimestr[j])
                     else:
                         tmp3 = j + 1
                         break
-                bestTime *= 60
-            tmp4 = 0
-            for j in range(tmp3, len(bestTimestr)):
-                if bestTimestr[j] != '.':
-                    tmp4 *= 10
-                    tmp4 += float(bestTimestr[j])
-                else:
-                    tmp3 = j + 1
-                    break
-            bestTime += tmp4
-            for j in range(tmp3, len(bestTimestr)):
-                bestTime += float(bestTimestr[j]) / pow(10, (j - tmp3 + 1))
-            bestTime = round(bestTime, 2)
+                bestTime += tmp4
+                for j in range(tmp3, len(bestTimestr)):
+                    bestTime += float(bestTimestr[j]) / pow(10, (j - tmp3 + 1))
+                bestTime = round(bestTime, 2)
+            
+            else:
+                tmp3 = 0
+                tmp4 = 0
+                for j in range(len(bestTimestr)):
+                    if bestTimestr[j] != '/':
+                        tmp4 *= 10
+                        tmp4 += float(bestTimestr[j])
+                    else:
+                        tmp3 = j + 1
+                        break
+                tmp5 = 0
+                for j in range(tmp3, len(bestTimestr)):
+                    if bestTimestr[j] != ' ':
+                        tmp5 *= 10
+                        tmp5 += float(bestTimestr[j])
+                    else:
+                        break
+                bestTime = tmp4 - (tmp5 - tmp4)
 
             print(wcaId, bestTime)
 
