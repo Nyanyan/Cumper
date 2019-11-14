@@ -1,6 +1,7 @@
 import pandas as pd
 import csv
 from selenium import webdriver
+import copy
 
 thisYear = 2019
 birththreshold = 12
@@ -11,11 +12,11 @@ countryindex = 3
 birthindex = 5
 numOfGroups = [8, 4, 4, 4, 4, 4, 4, 2, 4, 2, 2, 2, 4, 4, 4, 2, 2, 1]
 events = ['3x3x3 Cube', '2x2x2 Cube', '4x4x4 Cube', '5x5x5 Cube', '6x6x6 Cube', '7x7x7 Cube', '3x3x3 Blindfolded', '3x3x3 Fewest Moves', '3x3x3 One-Handed', '3x3x3 With Feet', 'Clock', 'Megaminx', 'Pyraminx', 'Skewb', 'Square-1', '4x4x4 Blindfolded', '5x5x5 Blindfolded', '3x3x3 Multi-Blind']
-
+singleAverage = ['Average','Average','Average','Average','Average','Average','Single','Single','Average','Average','Average','Average','Average','Average','Average','Single','Single','Single']
 
 registration = []
 
-with open('RegistrationExportedFromWCACompPage.csv', newline='', encoding='utf-8') as f:
+with open('sample.csv', newline='', encoding='utf-8') as f:
     reader = csv.reader(f)
     i = 0
     for row in reader:
@@ -36,7 +37,8 @@ for i in events:
 
 
 
-
+#judgeability
+judgeNumber = 0
 for i in range(1,len(registration)):
     wcaId = registration[i][wcaidcol]
     if wcaId != '':
@@ -69,6 +71,9 @@ for i in range(1,len(registration)):
         if numOfComps > compthreshold and thisYear - birth > birththreshold and registration[i][countryindex] == 'Japan':
             judgeability = True
         
+        if judgeability == True:
+            judgeNumber += 1
+        
         print(wcaId, judgeability)
 
         registration[i].append(judgeability)
@@ -80,9 +85,12 @@ judgeabilityindex = len(registration[1])
 timeindex = len(registration[1])
 
 
-#print(registration)
+print('JudgeNumber:', judgeNumber)
 
 
+
+
+#grouping
 for eventnum in range(len(events)):
     print('\n\n')
     print(events[eventnum])
@@ -96,7 +104,7 @@ for eventnum in range(len(events)):
     
     for i in range(1,len(registration)):
         if int(registration[i][eventTF]) == 1:
-            eventregistration.append(registration[i])
+            eventregistration.append(copy.copy(registration[i]))
     for i in range(1,len(eventregistration)):
         wcaId = eventregistration[i][wcaidcol]
         if wcaId != '':
@@ -104,45 +112,47 @@ for eventnum in range(len(events)):
 
             dfs = pd.read_html(url)
 
-            tmp = list(dfs[1][dfs[1]['Event'] == events[eventnum]]['Average'])
-            if len(tmp) > 0 and not pd.isnull(tmp[0]):
-                bestAveragestr = str(tmp[0])
-            else:
-                bestAveragestr = str(1000000000)
-            
-            #print(bestAveragestr)
+            col = singleAverage[eventnum]
 
-            bestAverage = 0
+            tmp = list(dfs[1][dfs[1]['Event'] == events[eventnum]][col])
+            if len(tmp) > 0 and not pd.isnull(tmp[0]):
+                bestTimestr = str(tmp[0])
+            else:
+                bestTimestr = str(1000000000)
+            
+            #print(bestTimestr)
+
+            bestTime = 0
             tmp3 = 0
-            if ':' in list(bestAveragestr):
-                for j in range(len(bestAveragestr)):
-                    if bestAveragestr[j] != ':':
-                        bestAverage *= 10
-                        bestAverage += float(bestAveragestr[j])
+            if ':' in list(bestTimestr):
+                for j in range(len(bestTimestr)):
+                    if bestTimestr[j] != ':' and bestTimestr[j] != '/':
+                        bestTime *= 10
+                        bestTime += float(bestTimestr[j])
                     else:
                         tmp3 = j + 1
                         break
-                bestAverage *= 60
+                bestTime *= 60
             tmp4 = 0
-            for j in range(tmp3, len(bestAveragestr)):
-                if bestAveragestr[j] != '.':
+            for j in range(tmp3, len(bestTimestr)):
+                if bestTimestr[j] != '.':
                     tmp4 *= 10
-                    tmp4 += float(bestAveragestr[j])
+                    tmp4 += float(bestTimestr[j])
                 else:
                     tmp3 = j + 1
                     break
-            bestAverage += tmp4
-            for j in range(tmp3, len(bestAveragestr)):
-                bestAverage += float(bestAveragestr[j]) / pow(10, (j - tmp3 + 1))
-            bestAverage = round(bestAverage, 2)
+            bestTime += tmp4
+            for j in range(tmp3, len(bestTimestr)):
+                bestTime += float(bestTimestr[j]) / pow(10, (j - tmp3 + 1))
+            bestTime = round(bestTime, 2)
 
-            print(wcaId, bestAverage)
+            print(wcaId, bestTime)
 
-            eventregistration[i].append(bestAverage)
+            eventregistration[i].append(bestTime)
         else:
             eventregistration[i].append(100000000000)
 
-    sortedRegistration = eventregistration[1:]
+    sortedRegistration = copy.copy(eventregistration[1:])
     sortedRegistration.sort(key=lambda x:x[timeindex])
     i = 0
 
@@ -164,32 +174,24 @@ for eventnum in range(len(events)):
             tmp += len(group[j])
         group.append(sortedRegistration[tmp:tmp + groupNum[i]])
 
-    '''
-    print('')
-    for i in range(numOfGroups):
-        for j in range(len(group[i])):
-            print(group[i][j])
-        print('')
-    print('')
-    '''
 
     flag = True
     while flag:
         judgecnt = []
         for i in range(numOfGroups[eventnum]):
-            tmp = 0
+            tmp = judgeNumber
             for j in range(numOfGroups[eventnum]):
-                if i != j:
+                if i == j:
                     for k in range(len(group[j])):
                         if group[j][k][judgeabilityindex] == True:
-                            tmp += 1
+                            tmp -= 1
             judgecnt.append(tmp)
-        print(judgecnt)
+        #print(judgecnt)
 
         judgelack = []
         for i in range(numOfGroups[eventnum]):
             judgelack.append(len(group[i]) + judgeMargin - judgecnt[i])
-        print(judgelack)
+        print('JudgeLack', judgelack)
 
         flag = False
         flag2 = False
